@@ -12,10 +12,10 @@ sources:
     resource: repo://libs/langchain_v1/langchain/agents/middleware/_trace_policy.py
   - id: openwiki-source-03e8ca0eebe37feda8566793
     resource: repo://libs/langchain_v1/langchain/agents/middleware/types.py
-generated: { by: "openwiki/0.5.0", at: "2026-11-10T08:17:41.265Z" }
+generated: { by: "openwiki/0.5.0", at: "2026-11-12T08:17:38.805Z" }
 verified:
   - by: openwiki/0.5.0
-    at: 2026-11-10T08:17:41.265Z
+    at: 2026-11-12T08:17:38.805Z
 ---
 
 ## Overview
@@ -301,6 +301,9 @@ The factory ships with a comprehensive middleware library:
 ### Advanced
 
 - **ModelCallLimitMiddleware**: Limit total model invocations to prevent runaway loops.
+- **ModelRefusalMiddleware**: Track and enforce policies around model refusals (e.g., limit the number of refusals before taking action).
+- **ModelRouterMiddleware**: Route requests to different models based on conditions or input characteristics (e.g., use fast model for simple queries, powerful model for complex ones).
+- **AutoModeMiddleware**: Automatically switch between agent modes (e.g., agentic vs. non-agentic) based on conversation state or configuration.
 - **ContextEditingMiddleware**: Edit or clear tool usage records in state (for context management).
 - **TodoListMiddleware**: Maintain a persistent todo list across the conversation (custom state extension).
 

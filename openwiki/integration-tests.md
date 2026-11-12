@@ -41,7 +41,7 @@ sources:
 generated: { by: "openwiki/0.5.0", at: "2026-10-26T08:33:32.568Z" }
 verified:
   - by: openwiki/0.5.0
-    at: 2026-10-29T08:20:01.046Z
+    at: 2026-11-12T08:17:38.805Z
 ---
 
 ## Overview

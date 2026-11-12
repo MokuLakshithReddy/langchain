@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:67c94e39f8f76fbb6b1b01e587fbe810a97ac7ea7c4a55402dfbe757dc0e685a",
+  "pageVersion": "sha256:b6d8644f8c8e7cb1ac710d71a77ee7e5c615985cb581dbfa879475bc3879901a",
   "claims": [
     {
       "id": "claim_1d60970c94894e56b803c4a5dd29b5e1",
@@ -68,7 +68,7 @@
       "evidence": [
         {
           "resource": "repo://.github/workflows/integration_tests.yml#L1-L8",
-          "version": "repo-lines-v1:sha256:37513b9ee9e7be7f2db866d60f0db6585f28d2b048611d4a9c04fe5f9b2623e9:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjc3NmQ3NzIxNGVhOTRiYmQ3MmNlZDA2YzQ5Y2ViZDk1MWNjOTIyNjczYmZhNDVhMmNlMmU0MDZjNDJiZTJjMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMGEyNWQzNDc0YWFhMTFkODQzOTk2YTQzZGUwMGMzNmJjM2IwNzhlYmVhMDE4OTM3MjJlMzc1MDk1YjE4YTdlYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmU0ZThjMDA4MTAzNTk2NGZhNzVjYWVhZDFiZjA1MTIxYzlhN2U3NmUxZjNmZWIyZmQ5MjBkNjI1OTJjMjZjYyJ9"
+          "version": "repo-lines-v1:sha256:c7e1985b4c11198a65bcc488259656b3dcbca02424ec95f144a9f4cf63a865ee:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjc3NmQ3NzIxNGVhOTRiYmQ3MmNlZDA2YzQ5Y2ViZDk1MWNjOTIyNjczYmZhNDVhMmNlMmU0MDZjNDJiZTJjMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNWU0ZTU0OTk1ZjhiODkyZDZkNTQyNTNkYmQzNTc1MmZiNmU0YjcxZWZiZDc1ZmU0YmRjZDExMThmZDc5MjEwYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmU0ZThjMDA4MTAzNTk2NGZhNzVjYWVhZDFiZjA1MTIxYzlhN2U3NmUxZjNmZWIyZmQ5MjBkNjI1OTJjMjZjYyJ9"
         },
         {
           "resource": "repo://.github/workflows/integration_tests.yml#L154-L159",
@@ -138,11 +138,11 @@
     },
     {
       "id": "claim_5bbb0d1e6a05437295b306f28450cb5a",
-      "statement": "Concurrency control in integration_tests.yml serializes same-package test runs per (working-directory, python-version) tuple to prevent racing against shared live API credentials while allowing 3.10/3.14 matrix legs within one run to execute in parallel.",
+      "statement": "Concurrency control in integration_tests.yml serializes same-package test runs per (working-directory, python-version) tuple to prevent racing against shared live API credentials while allowing 3.11/3.14 matrix legs within one run to execute in parallel.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/integration_tests.yml#L162-L168",
-          "version": "repo-lines-v1:sha256:9fec6bfb5dbf70075d7ee5663ecabc29093a99fd9b8810e807590b9f477fe7ed:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODc0NDQ1NTZhMjc4YjM4Y2Y2NTU3NWYxZjE0ZDBkMjMyN2U1OWY3OTZiODU2OTBjZDNiYjM0OWZmYjJjOWE2OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzlhYjc4MmJhNTZhMzRjMjVjZTEyNWI3OGJjOGM3ZjQyZDE0YjBkMTViYzEyMzcxZjVhMWFlMWU0N2ZiMzBiNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjNhZmI4YTE3NDQzNmQ1OTUxNmMwYTA2OWJhN2Y3ZTIxMmUwMDIwOTRlY2U3MjVhYWM4MGI4OGUwN2U1MWVhNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTE5ODNmNGMyMTFhMWI0NmFmOTliOWQ2ZWIyYzJhMDU4OGM1MTI4YTBiZDIyY2JlMmEzNDU3ZDg4MWJmNjBiNCJ9"
+          "resource": "repo://.github/workflows/integration_tests.yml#L159-L165",
+          "version": "repo-lines-v1:sha256:36ff6b8738b9960c8f7b73a4e8a08c4a3d33501dee6cfc7a698c1caa38b38f8d:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODc0NDQ1NTZhMjc4YjM4Y2Y2NTU3NWYxZjE0ZDBkMjMyN2U1OWY3OTZiODU2OTBjZDNiYjM0OWZmYjJjOWE2OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzlhYjc4MmJhNTZhMzRjMjVjZTEyNWI3OGJjOGM3ZjQyZDE0YjBkMTViYzEyMzcxZjVhMWFlMWU0N2ZiMzBiNCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjNhZmI4YTE3NDQzNmQ1OTUxNmMwYTA2OWJhN2Y3ZTIxMmUwMDIwOTRlY2U3MjVhYWM4MGI4OGUwN2U1MWVhNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTE5ODNmNGMyMTFhMWI0NmFmOTliOWQ2ZWIyYzJhMDU4OGM1MTI4YTBiZDIyY2JlMmEzNDU3ZDg4MWJmNjBiNCJ9"
         }
       ]
     },
@@ -161,18 +161,8 @@
       "statement": "Test-dependent job tests external packages (deepagents) against local langchain packages by installing test dependencies then overlaying local editable installs (libs/core, libs/langchain_v1) to catch breaking changes in downstream users.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/integration_tests.yml#L357-L411",
-          "version": "repo-lines-v1:sha256:888c4565f00f6c9098ac9f85ec6117c17dc73dcdbc3f8870729ebe66ee5f74a5:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE5ZDQxYTRiYmRmMGM1MTVjOGVjMzI0MWJlNTc4ODBmMDYzNjE5MWFhYjFmNThhOWI3NDYxMTVlZWY5OGFiMTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwY2ZkMjNkZTlmZWFmNjJmYzcwNGZmMWQyZGNiOTUwYzhmYWI2ZTExOTA0MzkzYTAzNGZjNDc5ZDE1NWIxMGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEyYjY1OWFkYTUxOGM2ODY1ZjI5ZTFmZWI1YWIxMDQ5NzQyNjRhOTIyOGU0ZGEyMmM3ZDdlNWE5M2M1MDg1ZDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
-        }
-      ]
-    },
-    {
-      "id": "claim_3846ee712b644ffdb491d6f400261cf1",
-      "statement": "Perplexity package receives special Python version handling in integration tests, using Python 3.11 and 3.14 like OpenAI rather than the default 3.10 and 3.14, due to SDK compatibility constraints enforced in matrix generation.",
-      "evidence": [
-        {
-          "resource": "repo://.github/workflows/integration_tests.yml#L148-L159",
-          "version": "repo-lines-v1:sha256:49fb649da06060de3d6f5c3adb77c6e57341b724e0a1d272930a8be7e6ebed79:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4ODE2NjY2YWQwYmVkYTE2ZWU4MDc5MGQwMzM3MjU0YTE0ZTRhNWI2OWQ4ZWIyNWNmNDMxZThhNWNjMGY1ODIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVjZTMzYTc3ZDQzYmI4OWZiMTY1NDU5M2FhYWQ0OTNiMjRmN2UxYzE3NDcyZGU1YzhmNjRlOTQzODdiMzZmZTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVmNjliZjAyYWZlNDJlOGMyZjBjYzIxYjFhYjhjNjZiZmFmMDc0YTc2Y2UyNzk0YjI2MTk5MGFmMWMwNGIxZWYifQ"
+          "resource": "repo://.github/workflows/integration_tests.yml#L354-L406",
+          "version": "repo-lines-v1:sha256:aa7a8a8922797f600a88b5b27ff8eaa39f43dc7bcca7ca01a75e6efaa2fcc069:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0N2IyY2U4MjMxZjEyYzFjYzFhYjEyYjRkM2VhNTcyNTkzZDgzYTU3OTBlMTk0NDBkNmQ0NTAzZTYwM2NlZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwY2ZkMjNkZTlmZWFmNjJmYzcwNGZmMWQyZGNiOTUwYzhmYWI2ZTExOTA0MzkzYTAzNGZjNDc5ZDE1NWIxMGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQzZjkxNmFjMTExYTM3ZTRlOTRkMzBiNTE1Y2Y2ODMyYmQ0OWI2ZWI1MzcyYzEzMTExNzNiOWQ3MzVjOWEyYWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -261,8 +251,8 @@
       "statement": "Extended testing installs conditional dependencies from extended_testing_deps.txt and runs with --only-extended marker for complex multi-package workflows; test-dependents job in integration_tests.yml tests external packages like deepagents against local langchain to catch breaking changes.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/integration_tests.yml#L357-L411",
-          "version": "repo-lines-v1:sha256:de782f5aa49b43ebdc89d859d7136bc3417a3a21bf829c1295f12ac41a93c3ba:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2YzM1ZTk4OWI1NjRiNGI2MjRjMmI4Y2NlZWI1ZjE4YzZkZjI4ZjJkZGViZDQyMzFhZmU3Yjc2M2ViYjlkOWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2NzY2NjQyYjYyZWUwYWMxYjEyNzZhNzM2NDQ2MWQ0YWZjNjY2YjA5ZjI5N2M0ZTc5NWUxZjNjZGE2NTE2NzQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRjYmRiNGYzMWMwMzczN2NlOTExNmM5MGE2ZDU2MzNhYTVmMGVlODM0YzcxZjUxYTc4NTUwZWYzN2JiZDYwYmMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQwZjEwZjMxYWEyZGQ3ZDMyZWQxYTkzOGRlODE0ZjhlYWFiMzBhNGJhNTdiNzIzYTMxNzUxM2IyYTlkYjRlMTUifQ"
+          "resource": "repo://.github/workflows/integration_tests.yml#L354-L406",
+          "version": "repo-lines-v1:sha256:aa7a8a8922797f600a88b5b27ff8eaa39f43dc7bcca7ca01a75e6efaa2fcc069:eyJzZWxlY3RlZExpbmVDb3VudCI6NTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0N2IyY2U4MjMxZjEyYzFjYzFhYjEyYjRkM2VhNTcyNTkzZDgzYTU3OTBlMTk0NDBkNmQ0NTAzZTYwM2NlZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwY2ZkMjNkZTlmZWFmNjJmYzcwNGZmMWQyZGNiOTUwYzhmYWI2ZTExOTA0MzkzYTAzNGZjNDc5ZDE1NWIxMGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQzZjkxNmFjMTExYTM3ZTRlOTRkMzBiNTE1Y2Y2ODMyYmQ0OWI2ZWI1MzcyYzEzMTExNzNiOWQ3MzVjOWEyYWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
           "resource": "repo://libs/core/extended_testing_deps.txt",
@@ -273,6 +263,6 @@
   ],
   "verification": {
     "by": "openwiki/0.5.0",
-    "at": "2026-11-06T08:17:28.425Z"
+    "at": "2026-11-12T08:17:38.805Z"
   }
 }

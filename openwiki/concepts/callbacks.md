@@ -3,9 +3,6 @@ type: Concept
 title: "Callbacks: Instrumentation & Observability"
 description: "Callbacks are an event-driven instrumentation system that enables monitoring, tracing, and custom logic in LangChain applications. Handler classes respond to component lifecycle events (start/end/error), managers coordinate dispatch and context propagation (tags, metadata, run IDs), and built-in handlers integrate with LangSmith for production tracing."
 tags: [callbacks, observability, tracing, langsmith, run_id, instrumentation]
-verified:
-  - by: openwiki/0.5.0
-    at: 2026-11-06T08:17:28.425Z
 sources:
   - id: openwiki-source-96c73d2c05223b0b46abdbe9
     resource: repo://libs/core/langchain_core/callbacks/__init__.py
@@ -21,7 +18,10 @@ sources:
     resource: repo://libs/core/langchain_core/tracers/context.py
   - id: openwiki-source-79eb321fa44e679f85ad5c48
     resource: repo://libs/core/langchain_core/tracers/langchain.py
-generated: { by: "openwiki/0.5.0", at: "2026-11-05T08:18:41.280Z" }
+generated: { by: "openwiki/0.5.0", at: "2026-11-12T08:17:38.805Z" }
+verified:
+  - by: openwiki/0.5.0
+    at: 2026-11-12T08:17:38.805Z
 ---
 
 ## Overview
@@ -521,44 +521,66 @@ This ensures streaming operations participate fully in the callback system and p
 
 ### Synchronous Dispatch
 
-The `handle_event` function dispatches synchronous and async handlers:
+The `handle_event` function dispatches synchronous and async handlers through these steps:
 
-```
-handle_event(handlers, "on_llm_start", "ignore_llm", ...)
-├─ For each handler not matching ignore condition:
-│  ├─ Call handler.on_llm_start(...) 
-│  ├─ If result is a coroutine:
-│  │  └─ Collect for async execution
-│  └─ If exception and handler.raise_error:
-│     └─ Re-raise
-└─ If async coroutines collected:
-   └─ Execute in thread pool (avoid blocking event loop)
+1. **Iterate handlers** and call the event method (e.g., `on_llm_start`)
+2. **Collect coroutines** if a handler's method returns an async coroutine
+3. **Apply ignore filters** based on handler properties (e.g., `ignore_llm`)
+4. **Handle errors** - log or raise based on handler's `raise_error` flag
+5. **Execute async coroutines** in a thread pool if an event loop is running (to avoid deadlock)
+
+```python
+# Pseudocode flow
+for handler in handlers:
+    if not getattr(handler, ignore_condition):
+        event_result = getattr(handler, event_name)(*args, **kwargs)
+        if asyncio.iscoroutine(event_result):
+            coros.append(event_result)  # Collect for async execution
+
+# Execute collected coroutines in thread pool if event loop running
+if coros:
+    if event_loop_running:
+        _executor().submit(copy_context().run, _run_coros, coros).result()
+    else:
+        _run_coros(coros)  # Direct execution if no loop running
 ```
 
-Async handlers invoked from sync code run in a new event loop via `ThreadPoolExecutor`.
+**Key design**: When async handlers are invoked from sync code with an active event loop, coroutines are collected and executed in a background thread pool to avoid blocking the main event loop.
+
+### Chat Model Fallback
+
+When a handler doesn't implement `on_chat_model_start`, the system automatically falls back to `on_llm_start` with messages converted to prompt strings:
+
+```python
+class MyHandler(BaseCallbackHandler):
+    def on_chat_model_start(self, serialized, messages, **kwargs):
+        raise NotImplementedError  # System converts messages to prompts and calls on_llm_start
+```
+
+This fallback enables handlers written for text LLMs to work transparently with chat models.
 
 ### Asynchronous Dispatch
 
-The `ahandle_event` function handles async dispatch:
+The `ahandle_event` async function handles dispatch in async contexts:
 
-```
-ahandle_event(handlers, "on_llm_start", "ignore_llm", ...)
-├─ Inline handlers (run_inline=True):
-│  └─ await sequentially
-└─ Non-inline handlers (run_inline=False):
-   └─ asyncio.gather() concurrently
-```
-
-This ensures inline handlers maintain strict ordering while non-inline handlers execute concurrently for performance.
-
-### Fallback for Chat Models
-
-When a handler doesn't implement `on_chat_model_start`, the system falls back to `on_llm_start` with prompts converted from messages:
+1. **Inline handlers** (with `run_inline=True`) are awaited sequentially
+2. **Non-inline handlers** are gathered and awaited concurrently
 
 ```python
-def on_chat_model_start(self, serialized, messages, **kwargs):
-    raise NotImplementedError  # Triggers fallback to on_llm_start
+# Inline handlers (strict ordering)
+for handler in handlers:
+    if handler.run_inline:
+        await _ahandle_event_for_handler(handler, event_name, ...)
+
+# Non-inline handlers (concurrent execution)
+await asyncio.gather(
+    _ahandle_event_for_handler(handler, event_name, ...)
+    for handler in handlers
+    if not handler.run_inline
+)
 ```
+
+This ensures handlers can control their execution model: inline handlers for order-sensitive operations, non-inline for I/O-heavy work that benefits from concurrency.
 
 ## Tracing Nested Executions
 

@@ -5,7 +5,7 @@ description: "Deprecated reference page. See /openwiki/concepts/callbacks.md for
 tags: ["callbacks", "deprecated", "redirect"]
 verified:
   - by: openwiki/0.5.0
-    at: 2026-10-25T08:23:03.589Z
+    at: 2026-11-12T08:17:38.805Z
 sources:
   - id: openwiki-source-c9313cf42f0120d86b20245f
     resource: repo://libs/core/langchain_core/callbacks/base.py

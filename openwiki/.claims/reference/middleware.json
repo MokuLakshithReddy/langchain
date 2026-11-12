@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:e27f2e51a9e0e04fe9a039f16b224bc861e95e85085a331ee4e2ebea9d8e3acc",
+  "pageVersion": "sha256:188c5d4b459ebdeca98c6dbf7fccfe4e6a229249203377ad72066e43ba6361c7",
   "claims": [
     {
       "id": "claim_37a46b11c73844ac8d4d5ee6f2f737c6",
@@ -8,17 +8,81 @@
       "evidence": [
         {
           "resource": "repo://libs/langchain_v1/langchain/agents/factory.py",
-          "version": "repo-file-v1:sha256:b70e7cffd19d840505b034d036926064d1a07e834aae4a35da2e0a47e0423438"
+          "version": "repo-file-v1:sha256:22c48a3478de99dabb06b413085e0e388e74ddb3681bd9892a373faa757cf8fe"
         },
         {
           "resource": "repo://libs/langchain_v1/langchain/agents/middleware/types.py",
-          "version": "repo-file-v1:sha256:56688206dce0334e7ca82125d7b809c23427890c234dfd69123dad038a387f31"
+          "version": "repo-file-v1:sha256:d9a5ae88cc2dd6bcdc3030ce2e1b55f876d2af88c02c27f5b630dadad350fb75"
+        }
+      ]
+    },
+    {
+      "id": "claim_07a2b85cc26b452bb14d4ffedc1fffd2",
+      "statement": "ModelRequest and ToolCallRequest enforce immutability through deprecation warnings on direct attribute assignment, requiring middleware to use the override() method to create new instances with modified fields.",
+      "evidence": [
+        {
+          "resource": "repo://libs/langchain_v1/langchain/agents/middleware/types.py#L171-L204",
+          "version": "repo-lines-v1:sha256:bf3d742f431b5329460d5358aa55f8fc30e2c3ec4cde6eab5f49bc9161af80f6:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU3MjQwZjk1M2I3ZDRlMDY2ZjJjZTExMjBiZWUxMDNiNGQ3NDZmMDA2NWFlODg4NjdmYWJjMDZkNmZiZjg1ZDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBmMDlhZjVjN2Q4YzExNWIyNGE5ZDJkNDY5ZGM1MTdmOTBhYTA0NTYzYTYyZTkxZjIyZGIxNDM0ZjVlMTJkNDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU4YTgzYzU2NmY5YjZjODJiMDM5ZGJmNmIxZWU0ZmM1YjIxNDdlYzFhMjA2Y2FiZGUxNTBkZDQ1ZjQ3YzY4YjIifQ"
+        },
+        {
+          "resource": "repo://libs/langchain_v1/langchain/agents/middleware/types.py#L205-L271",
+          "version": "repo-lines-v1:sha256:3520f1a6407e8d83c81bea4d581ee001e23d77d2ee4924010e0be9f88a273643:eyJzZWxlY3RlZExpbmVDb3VudCI6NjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmODUyNWFiYmM5NzAyMDI3NmMxM2VjM2FhMWUxZGZlOTg4OWM0MDNiODEzMDY3N2JkMzNkMzE0ZDdmZmYyOWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU3NmExNGNhZWI0NjcxMmQ3MGM2YmY5YTJjOGQ1Y2JlNjg3N2M5MmYxYzdiYWQ0ZDYyMDdlM2JmZTBjM2Q3YWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVjOGIzYTI0ZGU3ZGQ4NmUzMWQ2MjY3NTRiYzVlNDZiMTdhNjBhMGRmYmFhMjBiMWY3YWQ0MzgyODIyZmFjYWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZjMWYwMmZkN2VjMWQ0NjJjMGNiODE4Yjk0OGZmZTRmNzE1YjJjMmM0MzI2MzBjMjMyZGZlMzRkNDI3NDNmYTkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c43d57ae34d741b18414a229f1e6d5ce",
+      "statement": "Middleware can be created via decorators (@before_model, @after_model, @before_agent, @after_agent, @wrap_model_call, @wrap_tool_call, @dynamic_prompt) that accept optional parameters for state_schema, tools, can_jump_to, and name, generating AgentMiddleware subclasses at runtime that handle both sync and async execution contexts.",
+      "evidence": [
+        {
+          "resource": "repo://libs/langchain_v1/langchain/agents/middleware/types.py#L1866-L2017",
+          "version": "repo-lines-v1:sha256:0b99bff9cd169d58b15364e346bef3c757c1b39cd8ac67f9aa63e47a91d3491d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI1ODhkYzdlY2NkNjI3MWQ4NjM1MGY5Yjc3MDAyNjg4OGYyYzg5MzA3YzZmYjUwMWFhMmRlMDM2MGI3MjJjM2Q0IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI3NTAxYmM4OGZjZDI4MzU1ODYwYmViNzg2MzNiN2YwYzc0MmUxNTQ1ODA2YzJiMzNmODE4NjBmYmViZWI2NGI5IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJkNjBmZTg2NTMxMGRlMzMwZjE2YzQyZTY4ZjMwMWMzODNhZjg3MDk2NzVhYjYyN2E0OTcxNmY0YzQ2OWFiOGU0IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI3OTEzMDlkNzIyOWZhMmUzMzA3NjdhYTk5OGVlMTUwY2U5MjJjOTQzYTA0ZmZiY2FmMTRhY2FmMWRhOGViZDI3In0"
+        },
+        {
+          "resource": "repo://libs/langchain_v1/langchain/agents/middleware/types.py#L2039-L2180",
+          "version": "repo-lines-v1:sha256:183b34087956cc54db9eeafb2a6c42757e5ce0855e103a529e99723df8612663:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJhNGZkZDc0OGIxZDVlZTc4ODIzZGM4NjhlZjUyYjgwOTZlODAxNGFlN2Q2NjEyMmEwZDAxYmI3OGFlN2U3ZGYzIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJjNTlmMzkxYjIwMjdlYmIxMDYzMDM5NGRhYzc1YWNiOTdjNzRlY2NlMmU3MDY0ZjcwZDcwYzU4ZWMzZTUxNjM3IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJkNjBmZTg2NTMxMGRlMzMwZjE2YzQyZTY4ZjMwMWMzODNhZjg3MDk2NzVhYjYyN2E0OTcxNmY0YzQ2OWFiOGU0IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIxYTg5MGVkODlmODg4Nzc3Nzc1MGRjODJjMGNkMDVhYjM5NjZiODYyYjRlOWM0ODA5MzI4NDE4ZDNjMWFmYjE2In0"
+        },
+        {
+          "resource": "repo://libs/langchain_v1/langchain/agents/middleware/types.py#L881-L1122",
+          "version": "repo-lines-v1:sha256:00fc64d79fa4cae62e39faaa4a069e67d711874237240c9906a23e7574990fff:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJmZTYzMTRhYTI0MjMyMjkxNjY1NzZhNzFiOTdhYmE0NzU3OGYyODAwYzM2MmRiMDA2ZDVhOGZhODE4MDhlMzI3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiIyMzVjMTMwZjI3ZTkxOTBhYzk1MTMyOTQ1MTAxODVjMGI5MzVhYmE0NDcyNGM4YWFlN2ZiNzE4ZGEzNDAzYWRjIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJjOGY0MjVkNTU4ZDY1NTE5ZTQ0NGY4ZGVlNTA1NzQxMTA1MjI5YjQ1ODdlYTVjYTg0MWNiNmY0YWM2OWIxNzhkIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_225e6cd5d76f492cb5cc19bbe53bd307",
+      "statement": "Multiple middleware compose with first-in-list becoming the outermost layer wrapping all others; wrap_model_call handlers are composed right-to-left (outer wraps inner) so the first registered handler becomes the outermost wrapper, accumulating commands from inner-to-outer order.",
+      "evidence": [
+        {
+          "resource": "repo://libs/langchain_v1/langchain/agents/factory.py#L284-L373",
+          "version": "repo-lines-v1:sha256:272c0933c5414b8cecc2e64643c365fa65e76088a91d385cdab443f37076f035:eyJzZWxlY3RlZExpbmVDb3VudCI6OTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1Y2IwNmM0MzdmOTk3ODhiZDVjOGM4MDY5MjU0MTI5YmVlN2ExNGYzMzc2ZTFjZWY2MTczYWUyMGE3Y2YyZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImViZjVlNjBjNjUyNDc1YjVjNzhmMzdlYmI2OTJjNWIxM2NhZDMwMjI4NmM3MDFlYzBhZTAxODVhMWZiMzVjZGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI4YjE2YTdhZjFkZDFlYzI4OTY3MWRhMWU5MmExY2UzN2I4MTA0YWFlYjZlYjU3MzY1NmU4NWVhMzU0YTNhY2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU5YTcwM2FiYzE5MWZjZWUxOWIwMzM5NTc3MjEzZWQ2OTMyMGRlOTFmZWMwNDdjZjAzYTY0NTUyYzNiYTY1NjQifQ"
+        },
+        {
+          "resource": "repo://libs/langchain_v1/langchain/agents/factory.py#L713-L822",
+          "version": "repo-lines-v1:sha256:1677288ee20a0766e557ca59564e1c8af0dc7b6d2c6938d2e2eb36771f4833be:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlNjg3ZGI4NmIyYjJmZTY0NTgxZWRhMTFiMTUxMTQ0M2UwMWY4MTI4MzM4YmFlODg2OTQ0NWRhOGQzODhlZmQzIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmYTExYzA1NjdkMGE1ZjllOWIxMzVmNjVjZDI1MzcyZGZkNjI4Nzc1ZjdjMWVkMjUzZjhiYWQ0MmRkMmQ2NjY5IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI0YThmNTJiMzdhY2IxMGVlYzc3NDc5ZjMyY2UwZjBjNjliMGRhMzg4YTFmZGEyZTYzMWI0Yjk1OWU2MDNiNjZkIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI5YWI1ZjYxOWVjYjg0ODg5MjE4ZDAxZWIxZDJjMmFkOWY0ZDQ5ZGUzN2UyNWU1NmRmMGZlMjVkMzhiZWI2MDIxIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_34ad65ff94124f358ec35eda43e8248d",
+      "statement": "ExtendedModelResponse commands from multiple middleware layers are accumulated in inner-to-outer order and applied sequentially after the model node completes; reducer-based fields (messages) accumulate while non-reducer fields follow outermost-wins semantics where outer middleware values override inner ones.",
+      "evidence": [
+        {
+          "resource": "repo://libs/langchain_v1/langchain/agents/factory.py#L225-L281",
+          "version": "repo-lines-v1:sha256:6bb49e7a7e6403834213953a9111549f15c00024566792a43dc06e6452e013b7:eyJzZWxlY3RlZExpbmVDb3VudCI6NTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM3YzgzN2QxZjhjOGZmMTQ2ZGFkODY5ZTlhZDhkMGNjYzY2YTA0Y2JhNjVkNzBhYTM5ZDUxMDAwNTQzMzFiNGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYyNmQ2OGQ5YjUyMjFlYjU5NGVmOGJjN2JmZTNhYzVhNjM2ZjA2MjlmNmU1ZGNmNmE5NWEyMGZmMThhZDdmMzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ3MjIzMTA2ZmQ4NzQyYjcwZWEyMzNmOWRjMzU5ZjRiMDJiYmIwNjliNzI4M2VlZjc2MjQ5OTUxNmJkN2I5YzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRiN2UyMTk1NWE5MGNjNjVhNmY1YmQxNTE2ODEyYThmYTQzYmNmZDhiZWJiMzMwNDJiMzg4NDZjMmUzNzYwNzQifQ"
+        },
+        {
+          "resource": "repo://libs/langchain_v1/langchain/agents/factory.py#L334-L374",
+          "version": "repo-lines-v1:sha256:345d42c45096ad852801587b5f4afa93592f2a29eddccbb507c4d900039ebb36:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4YTRjZmM4OWI5Yzc0NmZiOWQyMjE4YmZkZWYyYjA0ZDMzYzE3NzIzYmI1Yjc1NzdlY2I3YjQ5YTNiM2UwOGQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU5OGM5YTYxMWVmNGRjOWUzODk5MWMzZWI3ZDIyOGNkODZmMjNlNDIyZDc0MmY4NzMwZDg3Zjg0NDI1ODg2ZDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg4ZmU3ZDc2ZDU4MjFiNWQxOTM5ZjI2NTVjODhlZjQ1ZmRiOGM4OTVlZGRiYTdmZGE4ZjhmNWMwODVlMWI2ZGUifQ"
+        },
+        {
+          "resource": "repo://libs/langchain_v1/langchain/agents/middleware/types.py#L293-L315",
+          "version": "repo-lines-v1:sha256:79a426301860fbdb8f2886c8138538ff546c2b561e13851ba96edb44c1ef8be8:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmYmRhMTFlMTcwMmQ2MjA2NzIzNjk4YTRjN2I0OWMxMjZlNjEyMmRhMjU4NGMwOTdiYjFhMGUzYjI4ODM4NzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZjMWYwMmZkN2VjMWQ0NjJjMGNiODE4Yjk0OGZmZTRmNzE1YjJjMmM0MzI2MzBjMjMyZGZlMzRkNDI3NDNmYTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI2YzViNjUzOGQ1NDQzNTQ1ZWRkOWY3OTQ5MDMwYTg0MTk3MmZmNjk2MmExMTEwNmIwMjE1YzZiZmM1YTkxNGEifQ"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.5.0",
-    "at": "2026-11-10T08:17:41.265Z"
+    "at": "2026-11-12T08:17:38.805Z"
   }
 }

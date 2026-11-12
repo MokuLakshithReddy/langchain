@@ -3,15 +3,15 @@ type: Integration Testing Framework
 title: Integration Tests
 description: LangChain's integration testing framework for partner libraries and chat models, including VCR cassette recording, pytest markers for test classification, and scheduled CI/CD execution against live APIs.
 tags: [integration-tests, testing, vcr-cassettes, pytest, ci-cd, chat-models]
-verified:
-  - by: openwiki/0.5.0
-    at: 2026-10-26T08:33:32.568Z
 sources:
   - id: openwiki-source-9069a5dd5fbb579fbd5470ce
     resource: repo://.github/workflows/integration_tests.yml
   - id: openwiki-source-711811fb8df6b32329091d23
     resource: repo://libs/partners/openai/tests/integration_tests/chat_models/test_base_standard.py
 generated: { by: "openwiki/0.5.0", at: "2026-10-26T08:33:32.568Z" }
+verified:
+  - by: openwiki/0.5.0
+    at: 2026-11-12T08:17:38.805Z
 ---
 
 ## Overview

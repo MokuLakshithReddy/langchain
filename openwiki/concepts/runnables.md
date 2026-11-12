@@ -14,10 +14,10 @@ sources:
     resource: repo://libs/core/langchain_core/runnables/fallbacks.py
   - id: openwiki-source-7a970e5b49bde2fe4f9be3db
     resource: repo://libs/core/langchain_core/runnables/passthrough.py
-generated: { by: "openwiki/0.5.0", at: "2026-10-25T08:23:03.589Z" }
+generated: { by: "openwiki/0.5.0", at: "2026-11-12T08:17:38.805Z" }
 verified:
   - by: openwiki/0.5.0
-    at: 2026-11-06T08:17:28.425Z
+    at: 2026-11-12T08:17:38.805Z
 ---
 
 ## Overview
@@ -497,6 +497,8 @@ await runnable.ainvoke(1)  # 2
 
 ### RunnableGenerator
 
+**Location**: `repo://libs/core/langchain_core/runnables/base.py#L4418-L4720`
+
 Wraps generator functions (sync or async) to create streaming runnables:
 
 ```python
@@ -516,6 +518,94 @@ for chunk in runnable.stream("hello world"):
 - Useful for implementing custom streaming logic.
 - Supports both sync generators and async generators.
 - Automatically implements `transform` for end-to-end streaming.
+- Enables progressive streaming through chains where outputs flow incrementally.
+
+### @chain Decorator
+
+**Location**: `repo://libs/core/langchain_core/runnables/base.py#L6678-L6712`
+
+The `@chain` decorator converts a regular Python function into a `Runnable` without explicitly instantiating `RunnableLambda`:
+
+```python
+from langchain_core.runnables import chain
+from langchain_core.prompts import PromptTemplate
+from langchain_openai import OpenAI
+
+@chain
+def my_func(fields):
+    prompt = PromptTemplate("Hello, {name}!")
+    model = OpenAI()
+    formatted = prompt.invoke(**fields)
+    
+    for chunk in model.stream(formatted):
+        yield chunk
+
+# Usage: invoke, stream, batch, etc. all available automatically
+result = my_func.invoke({"name": "Alice"})
+```
+
+**Key behavior**:
+
+- Wraps a function as a `RunnableLambda`, enabling it to be composed with `|` and other Runnables.
+- Sets the Runnable's name to the function's name for tracing.
+- Supports sync functions, async functions, generators, and async generators.
+- Any Runnables invoked within the function are traced as dependencies.
+- Preferred over manual `RunnableLambda` wrapping for cleaner code.
+
+### Custom Runnable Subclasses
+
+For complex components requiring fine-grained control over execution semantics, create a custom subclass of `Runnable` or `RunnableSerializable`:
+
+```python
+from langchain_core.runnables import RunnableSerializable
+from langchain_core.runnables.config import RunnableConfig
+from typing import Any
+
+class CustomRunnable(RunnableSerializable[str, int]):
+    """A custom runnable that counts words."""
+    
+    def invoke(
+        self,
+        input: str,
+        config: RunnableConfig | None = None,
+        **kwargs: Any,
+    ) -> int:
+        """Synchronous invoke: count words."""
+        return len(input.split())
+    
+    async def ainvoke(
+        self,
+        input: str,
+        config: RunnableConfig | None = None,
+        **kwargs: Any,
+    ) -> int:
+        """Async invoke: count words asynchronously."""
+        # For CPU-bound work, consider using run_in_executor
+        return len(input.split())
+    
+    def stream(
+        self,
+        input: str,
+        config: RunnableConfig | None = None,
+        **kwargs: Any,
+    ):
+        """Override stream to yield incremental results if applicable."""
+        # Default: yield single output from invoke
+        yield self.invoke(input, config, **kwargs)
+
+# Usage
+custom = CustomRunnable()
+custom.invoke("hello world")  # 2
+custom.batch(["hello world", "foo bar baz"])  # [2, 3]
+```
+
+**Key patterns**:
+
+- **`RunnableSerializable`**: Extends `Runnable` with JSON serialization and Pydantic model integration. Preferred for production components.
+- **Minimal override**: Only override `invoke()`; all other methods have sensible defaults.
+- **Optimization**: Override `batch()` for custom batching logic (e.g., batch API calls), `stream()` for streaming, or `ainvoke()` for native async.
+- **Type safety**: Use generic type parameters `RunnableSerializable[Input, Output]` to enforce input/output contracts.
+- **Configuration**: Accept `RunnableConfig` to support tags, metadata, callbacks, and configurable parameters.
 
 ### RunnablePassthrough
 

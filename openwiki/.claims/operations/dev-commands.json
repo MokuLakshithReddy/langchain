@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:40052bb92040af4e0f7ff848883cd6178217ecbfc7861064b7ff8b73327bf0a4",
+  "pageVersion": "sha256:ee548e752d87c728de1266cd8ffcd41be90d0e92a0431c9d1c7e280b41698c3b",
   "claims": [
     {
       "id": "claim_6953198e8c5d4886a865c2f3b32d9b22",
@@ -159,10 +159,30 @@
           "version": "repo-lines-v1:sha256:e82790967b6464c3f65170fa5ee8a51ab861a0a39d8b9ed692c2d84707674b58:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2IzZTE2NzgzNDRjNGM3ODdmYmRkYjI2MzlkMTM2OGFkYTc0OGRkZDliNzg1ZTQ1NTZjNWY1ODkxMjY3MTNiMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTNjNWM5MjBjYTJiNzdlNDI0MGYwMDc0YTAzNzU2ZDM3ZGE0YWQ2N2E5YjU4M2EwNDdkZGFjNzNiZWRlYzM3OSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjFhNmQzNDc0MzM3NmU3MTlkMzdmZDg3NTk2YjkyYjIwNjNkMDdjZTQwZmVhNzNmYjVmNjJmN2RhZGMzZWI3MyJ9"
         }
       ]
+    },
+    {
+      "id": "claim_cae4a33492204afd92a5cb9d2cff8681",
+      "statement": "The langchain_v1 package requires Docker services (PostgreSQL and Redis) for certain tests; make test automatically starts and stops these services via docker compose and sets LANGGRAPH_TEST_FAST=0 for full test execution; make test_fast sets LANGGRAPH_TEST_FAST=1 to use in-memory services only for faster iteration",
+      "evidence": [
+        {
+          "resource": "repo://libs/langchain_v1/Makefile#L10-L44",
+          "version": "repo-lines-v1:sha256:c0433ebed594f01b0643c125280438a8183bd59aed0a94fdd5e84113fbccc255:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyYTMxYjRjNTM4MzU0MjU1YWM5ZDllODJmMzgyYzg4YzAzYTQ1ZjZiNTg4MGJjNjQ3NTNlZTUyMmVmN2MxNDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIyZTNjZGE3ODE1MTM2MDE1MmI4YWM1ZWEwYTdkNmU1NWJkNzQxYjM1YWU1YWE3ZGVjMzU5M2ZmOTlmNzY4N2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijc0ZWJhYzU1OWIxOGIxZWE4ZTkxZWUzMGM3YmE0ZWMxMGY4YTU5OGQ5NDNkYThmZDI1NDRkMzJlNGZlZWYwMDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVjYTkyZmFmYjU5MjhjZDgyOTUzZGU5OTNkMjBjNTIxZGMxYjdmNjhmN2E1ZTE2ZWRiOGFlZmFiZGJhMGYwMGIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a4201bb53115431187d9d3fea56b822c",
+      "statement": "Partner packages like anthropic support multi-version SDK testing via uv run --with flag to test compatibility with different major versions (e.g., anthropic 0.x with httpx vs 1.x with httpx2) without modifying uv.lock",
+      "evidence": [
+        {
+          "resource": "repo://libs/partners/anthropic/Makefile#L14-L24",
+          "version": "repo-lines-v1:sha256:8ee69a35f8177b234fec8dcf1c5c3639bef347acad628297f59376b1a878efab:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdiMWE0ZjA0MWExMGJkN2RlYzdhNWMxNDkzMzYwYjgxNWRmZWM4ODE2YmQzZmZhMjA5OWI2NDBiNDA0YjE5OGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAyMzcxYzdmNWFkZTZiNGVkZDkyMmEyNjVhYjA0ZmQ5MWRmZmQzMjcwNzkzY2ZkN2RkOTM0YTNhZDZmOTA1MmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1MGE1NjRhOWRiYjM1NzE0ZGQ2MzBmZWExNzVjOWU1ZDk0YzVhMjNmZTM3ODEyM2M1YWRjYWMyN2VmYmYxMmUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZjZTRlZWIyZWRjOTlhYjcyMWEyZjUyYThmYTg3OWIzNDg2NTM1MzVlYmUwOGU1MTQ3ZmZhNjM5MDNiMWY0ZDUifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.5.0",
-    "at": "2026-11-06T08:17:28.425Z"
+    "at": "2026-11-12T08:17:38.805Z"
   }
 }

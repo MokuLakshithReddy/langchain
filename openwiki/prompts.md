@@ -24,10 +24,10 @@ sources:
     resource: repo://libs/core/langchain_core/prompts/string.py
   - id: openwiki-source-204b5e61a019044332bd2dd4
     resource: repo://libs/core/langchain_core/prompts/structured.py
-generated: { by: "openwiki/0.5.0", at: "2026-10-20T08:25:57.412Z" }
+generated: { by: "openwiki/0.5.0", at: "2026-11-12T08:17:38.805Z" }
 verified:
   - by: openwiki/0.5.0
-    at: 2026-10-20T08:25:57.412Z
+    at: 2026-11-12T08:17:38.805Z
 ---
 
 ## Overview
@@ -634,25 +634,3 @@ print(partial.input_variables)   # []
 ```
 
 This immutability enables safe composition and caching in pipelines.
-
-## Integration with Agents
-
-Prompts are a core input to the **Agent Factory** (`create_agent`), providing the conversational context for agent reasoning and tool use.
-
-```python
-from langchain.agents import create_agent
-from langchain_core.prompts import ChatPromptTemplate
-
-system_template = ChatPromptTemplate.from_messages([
-    ("system", "You are a helpful weather assistant."),
-])
-
-# Or use a simple string
-agent = create_agent(
-    model="openai:gpt-4o",
-    tools=[weather_tool],
-    system_prompt="You are a helpful weather assistant."
-)
-```
-
-The agent factory internally compiles prompts with the model and tool bindings, managing message flow through the state machine. Middleware can intercept and modify prompts before model invocation via the `wrap_model_call` hook, enabling use cases like prompt optimization or safety filters.

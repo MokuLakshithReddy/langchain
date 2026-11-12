@@ -3,9 +3,6 @@ type: "Concept"
 title: "Tools: Function Calling and Tool Use"
 description: "Explain the BaseTool abstraction: schema generation, invocation, callbacks, and error handling; when and how models bind tools; tool selection patterns in agents."
 tags: ["tools", "function-calling", "agent-execution", "schema", "runnable"]
-verified:
-  - by: openwiki/0.5.0
-    at: 2026-11-06T08:17:28.425Z
 sources:
   - id: openwiki-source-c52037e7b642f7ac5a7642a8
     resource: repo://libs/core/langchain_core/language_models/chat_models.py
@@ -27,7 +24,10 @@ sources:
     resource: repo://libs/partners/anthropic/langchain_anthropic/chat_models.py
   - id: openwiki-source-738512768ef81ae009b097ac
     resource: repo://libs/partners/openai/langchain_openai/chat_models/base.py
-generated: { by: "openwiki/0.5.0", at: "2026-11-06T08:17:28.425Z" }
+generated: { by: "openwiki/0.5.0", at: "2026-11-12T08:17:38.805Z" }
+verified:
+  - by: openwiki/0.5.0
+    at: 2026-11-12T08:17:38.805Z
 ---
 
 
@@ -528,6 +528,8 @@ def search(query: str) -> str:
 result = search.invoke({"query": 123})  # Returns error message
 ```
 
+When a validation error is handled, it is wrapped in a `ToolMessage` with `status="error"` if a `tool_call_id` is provided. Otherwise, the error message is returned as a string.
+
 ### Tool Errors
 
 `ToolException` is controlled by `handle_tool_error`:
@@ -554,6 +556,8 @@ def search(query: str) -> str:
     """Search with custom error handling."""
     return query
 ```
+
+Like validation errors, handled tool errors are wrapped in a `ToolMessage` with `status="error"` when a `tool_call_id` is provided.
 
 ## Advanced Patterns
 

@@ -10,10 +10,10 @@ sources:
     resource: repo://.github/workflows/check_diffs.yml
   - id: openwiki-source-9069a5dd5fbb579fbd5470ce
     resource: repo://.github/workflows/integration_tests.yml
-generated: { by: "openwiki/0.5.0", at: "2026-10-29T08:20:01.046Z" }
+generated: { by: "openwiki/0.5.0", at: "2026-11-12T08:17:38.805Z" }
 verified:
   - by: openwiki/0.5.0
-    at: 2026-11-05T08:18:41.280Z
+    at: 2026-11-12T08:17:38.805Z
 ---
 
 ## Overview
@@ -349,7 +349,7 @@ env:
 ```yaml
 outputs:
   matrix: ${{ steps.set-matrix.outputs.matrix }}
-  python-version-min-3-11: ${{ steps.set-matrix.outputs.python-version-min-3-11 }}
+  python-versions: ${{ steps.set-matrix.outputs.python-versions }}
 ```
 
 **Matrix computation:**
@@ -358,10 +358,9 @@ outputs:
 - Excludes specified packages from all-run
 - Generates include list: `[{working-directory, python-version}, ...]`
 
-**Special Python version handling:**
-- `openai`, `perplexity`: `[3.11, 3.14]`
-- Other packages: `[3.10, 3.14]` (default)
-- If override specified ≥3.11: use in python-version-min-3-11
+**Python version handling:**
+- Default: `[3.11, 3.14]` for all packages
+- If override specified: use only that version (e.g., `3.12` → `[3.12]`)
 
 ### Job: `integration-tests`
 
@@ -427,7 +426,7 @@ env:
 **Purpose:** Test external packages against current branch's langchain
 
 **Matrix:**
-- Python: `{{ fromJSON(needs.compute-matrix.outputs.python-version-min-3-11) }}`
+- Python: `{{ fromJSON(needs.compute-matrix.outputs.python-versions) }}`
 - Packages:
   - `deepagents` (from `langchain-ai/deepagents`)
 

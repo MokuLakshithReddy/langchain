@@ -5,13 +5,13 @@ description: "Reference guide to agent middleware hooks, composition semantics, 
 tags: [agent-middleware, lifecycle-hooks, request-interception, composition]
 verified:
   - by: openwiki/0.5.0
-    at: 2026-11-10T08:17:41.265Z
+    at: 2026-11-12T08:17:38.805Z
 sources:
   - id: openwiki-source-71e882e1ac9757ea8e959a7c
     resource: repo://libs/langchain_v1/langchain/agents/factory.py
   - id: openwiki-source-03e8ca0eebe37feda8566793
     resource: repo://libs/langchain_v1/langchain/agents/middleware/types.py
-generated: { by: "openwiki/0.5.0", at: "2026-11-10T08:17:41.265Z" }
+generated: { by: "openwiki/0.5.0", at: "2026-11-12T08:17:38.805Z" }
 ---
 
 ## Overview
@@ -138,6 +138,145 @@ agent = create_agent(
 
 **Composition Rule**: First in list = outermost (highest priority for interception and response transformation). The factory collects middleware with `wrap_model_call` hooks, composes them into a single middleware stack where first becomes outermost layer. Commands from each layer are accumulated in inner-to-outer order and applied sequentially.
 
+## Decorator API
+
+Middleware can be created using the `AgentMiddleware` base class or via convenient decorators for common patterns:
+
+### Class-Based Middleware
+
+Subclass `AgentMiddleware` and override hook methods:
+
+```python
+class MyMiddleware(AgentMiddleware):
+    def before_model(self, state, runtime):
+        # Custom logic before model call
+        return {"custom_field": "value"}
+    
+    def wrap_model_call(self, request, handler):
+        # Intercept and modify model execution
+        response = handler(request)
+        return response
+```
+
+### Function-Based Middleware via Decorators
+
+**`@before_model`** - Runs before each model invocation:
+
+```python
+@before_model
+def my_before_hook(state: AgentState, runtime: Runtime) -> dict[str, Any] | None:
+    print(f"About to call model with {len(state['messages'])} messages")
+    return None
+
+# With conditional jump destinations
+@before_model(can_jump_to=["end", "model"])
+def conditional_exit(state: AgentState, runtime: Runtime) -> dict[str, Any] | None:
+    if some_exit_condition(state):
+        return {"jump_to": "end"}
+    return None
+```
+
+**`@after_model`** - Runs after model response:
+
+```python
+@after_model
+def my_after_hook(state: AgentState, runtime: Runtime) -> None:
+    last_message = state["messages"][-1]
+    print(f"Model responded with: {last_message.content}")
+```
+
+**`@before_agent`** - Runs once at agent initialization:
+
+```python
+@before_agent
+def initialize(state: AgentState, runtime: Runtime) -> dict[str, Any]:
+    return {"initialized": True}
+```
+
+**`@after_agent`** - Runs once when agent completes:
+
+```python
+@after_agent
+def finalize(state: AgentState, runtime: Runtime) -> None:
+    print("Agent execution complete")
+```
+
+**`@wrap_model_call`** - Intercepts model execution (retry, fallback, etc.):
+
+```python
+@wrap_model_call
+def retry_on_error(request, handler):
+    for attempt in range(3):
+        try:
+            return handler(request)
+        except Exception as e:
+            if attempt == 2:
+                raise
+            time.sleep(2 ** attempt)
+
+# Async version with same decorator
+@wrap_model_call
+async def async_retry(request, handler):
+    for attempt in range(3):
+        try:
+            return await handler(request)
+        except Exception:
+            if attempt == 2:
+                raise
+```
+
+**`@wrap_tool_call`** - Intercepts tool execution (validation, caching, etc.):
+
+```python
+@wrap_tool_call
+def validate_and_execute(request, handler):
+    # Validate tool arguments
+    if request.tool_call["name"] == "search":
+        args = request.tool_call.get("args", {})
+        if not args.get("query"):
+            return ToolMessage(
+                content="Query is required",
+                tool_call_id=request.tool_call["id"],
+                status="error"
+            )
+    return handler(request)
+```
+
+**`@dynamic_prompt`** - Generate system prompts dynamically based on request:
+
+```python
+@dynamic_prompt
+def user_specific_prompt(request: ModelRequest) -> str:
+    user_name = request.runtime.context.get("user_name", "User")
+    return f"You are a helpful assistant assisting {user_name}."
+```
+
+**`@hook_config`** - Configure hook behavior (e.g., jump destinations):
+
+```python
+class MyMiddleware(AgentMiddleware):
+    @hook_config(can_jump_to=["end"])
+    def before_model(self, state, runtime):
+        if should_exit(state):
+            return {"jump_to": "end"}
+        return None
+```
+
+### Custom State Schemas
+
+Middleware can extend the default `AgentState` with custom fields:
+
+```python
+class CustomState(AgentState):
+    custom_field: NotRequired[str]
+    counter: NotRequired[int]
+
+@before_model(state_schema=CustomState)
+def my_hook(state: CustomState, runtime: Runtime) -> dict[str, Any]:
+    state["counter"] = state.get("counter", 0) + 1
+    return {"counter": state["counter"]}
+```
+
 ## Sync and Async Execution
 
 Middleware can provide sync-only, async-only, or both implementations:
@@ -248,6 +387,5 @@ class ConditionalMiddleware(AgentMiddleware):
 
 ## See Also
 
-- [Agent Middleware: Composable Request/Response Processing](/openwiki/middleware.md) – Comprehensive guide including all middleware types, composition patterns, and implementation examples
 - [Agent Execution Flow and Loop Control](/openwiki/agent-execution.md) – Detailed description of agent loop and middleware hook invocation points
 - [Agent Factory and Graph Construction](/openwiki/agent-factory.md) – How the agent graph is built with middleware integration

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:03aa773aa584d8166689edd1dfeb27c67effa98bdb6e480a2c306c3b1ca9b207",
+  "pageVersion": "sha256:3106be6ee0492b6e008470d34632bdd170aeda6175f525cd0cbc2474b56243ac",
   "claims": [
     {
       "id": "claim_2398118949694e65ab0528bfdd317817",
@@ -8,17 +8,17 @@
       "evidence": [
         {
           "resource": "repo://libs/core/langchain_core/callbacks/base.py",
-          "version": "repo-file-v1:sha256:10d692bbd4cfccd82ad514649682f79306b9cd730235c3838bc3d1a96a455dea"
+          "version": "repo-file-v1:sha256:789df950d94517f7599c2ba24d6aafd87e6edcaf47b62edd139584a2156e8dd1"
         },
         {
           "resource": "repo://libs/core/langchain_core/callbacks/manager.py",
-          "version": "repo-file-v1:sha256:323e48901ebf1ecd2c1b197e8cc1d81298366b29ee89aa02ab729d725fbcfebc"
+          "version": "repo-file-v1:sha256:03e1c6f23aa9d21a14b055a5bf0c7ab26956e90b5c35dfcfd375f9bb19df9089"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.5.0",
-    "at": "2026-10-25T08:23:03.589Z"
+    "at": "2026-11-12T08:17:38.805Z"
   }
 }

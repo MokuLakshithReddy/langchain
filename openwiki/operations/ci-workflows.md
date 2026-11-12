@@ -1,8 +1,8 @@
 ---
 type: "Operations Reference"
-title: "CI/CD Operations and Release Management"
-description: "Operational runbook for CI/CD workflows, troubleshooting, and release procedures."
-tags: [ci, cd, release, automation, github-actions, pypi]
+title: "CI/CD Workflows"
+description: "Overview of GitHub Actions workflows: PR lint, unit tests, integration tests, scheduling, and debugging CI failures."
+tags: [ci, cd, automation, github-actions, testing, pypi]
 sources:
   - id: openwiki-source-6445599f26c9a35886c1c46e
     resource: repo://.github/PULL_REQUEST_TEMPLATE.md
@@ -20,10 +20,10 @@ sources:
     resource: repo://.github/workflows/pr_labeler.yml
   - id: openwiki-source-12805fbf767dc2a3e238645e
     resource: repo://.github/workflows/pr_lint.yml
-generated: { by: "openwiki/0.5.0", at: "2026-11-06T08:17:28.425Z" }
+generated: { by: "openwiki/0.5.0", at: "2026-11-12T08:17:38.805Z" }
 verified:
   - by: openwiki/0.5.0
-    at: 2026-11-06T08:17:28.425Z
+    at: 2026-11-12T08:17:38.805Z
 ---
 
 
@@ -41,6 +41,50 @@ The system comprises:
 
 ---
 
+## Workflow Catalog
+
+### Key Workflows at a Glance
+
+| Workflow | File | Trigger | Purpose |
+|----------|------|---------|---------|
+| **PR Lint** | `pr_lint.yml` | Every PR | Validates conventional commit format |
+| **PR CI (Check Diffs)** | `check_diffs.yml` | Every PR/push to main | Detects changed packages, runs unit/lint tests |
+| **Integration Tests** | `integration_tests.yml` | Daily (1 PM UTC) + manual | Tests live API integrations with credentials |
+| **PR Labeling** | `pr_labeler.yml` | Every PR event | Auto-labels by contributor, file, size, type |
+| **Release** | `_release.yml` | Manual `workflow_dispatch` | Builds, tests, publishes to PyPI |
+| **Documentation** | `openwiki-update.yml` | Daily (8 AM UTC) + manual | Auto-generates wiki from source code |
+
+---
+
+## PR Lint: Conventional Commits
+
+### Workflow: `pr_lint.yml`
+
+Validates that all PRs follow the Conventional Commits 1.0.0 standard.
+
+**Trigger:** Every pull request
+
+**Format:** `<type>[optional scope]: <description>`
+
+**Allowed types:**
+- `feat` — new feature (MINOR bump)
+- `fix` — bug fix (PATCH bump)
+- `docs` — documentation only
+- `style` — formatting/linting (no code change)
+- `refactor` — code change (no feature/fix)
+- `perf` — performance improvement
+- `test` — add/fix tests
+- `build` — build system changes
+- `ci` — CI/CD configuration changes
+- `chore` — other changes
+- `revert` — revert previous commit
+- `release` — version release
+- `hotfix` — urgent fix
+
+**Breaking changes:** Append `!` after type/scope (e.g., `feat(core)!: remove deprecated API`) to trigger MAJOR version bump.
+
+---
+
 ## PR CI: Intelligent Change Detection & Matrix Testing
 
 ### Workflow: `check_diffs.yml`
@@ -48,6 +92,7 @@ The system comprises:
 The primary PR CI workflow runs on every pull request and push to master. Its core responsibility is **detecting which packages changed and mapping those changes to appropriate test configurations**.
 
 **Trigger:** Pull requests, merges to master, merge queue participation
+
 **Key Features:**
 - Cancels redundant runs (concurrency with `cancel-in-progress: true`)
 - Reads-only permission level for security
@@ -88,14 +133,6 @@ The `build` job outputs JSON test matrices for seven parallel jobs:
 - **dependencies** — Dependency compatibility checks
 
 Each configuration includes `working-directory` and `python-version` (or `pydantic-version` for Pydantic tests).
-
-### Python Version Matrix
-
-The script generates different Python version matrices per package type:
-
-- **libs/core**: Tests on Python 3.10, 3.11, 3.12, 3.13, 3.14
-- **openai and perplexity packages**: Tests on Python 3.11, 3.14 for lint and compile-integration-tests jobs (special SDK compatibility handling)
-- **Other packages**: Tests on Python 3.10, 3.14 (reduced to save CI time)
 
 ### Pydantic Compatibility Testing
 
@@ -143,7 +180,6 @@ Once the `build` job outputs the matrices, seven jobs run in parallel (if not em
 - Only for packages with VCR cassettes: `libs/partners/openai`
 - Runs integration tests in playback-only mode (uses cached HTTP responses, no API keys)
 - Detects stale cassettes that don't match actual API responses
-- Note: While only openai has VCR cassettes, perplexity still receives special Python version handling (3.11, 3.14) in integration test jobs due to SDK compatibility requirements
 
 #### 7. Release Option Validation
 - `check-release-options` job validates that `_release.yml` dropdown options match actual package directories
@@ -158,6 +194,7 @@ Once the `build` job outputs the matrices, seven jobs run in parallel (if not em
 Automatically applies labels to PRs based on contributor type, file changes, PR size, and title patterns.
 
 **Trigger:** PR opened, synchronized, reopened, or edited
+
 **Key Security:**
 - Uses `pull_request_target` to avoid checking out untrusted code
 - Generates GitHub App token only for membership checks
@@ -171,7 +208,7 @@ The workflow applies labels in this order:
    - Checks org membership using GitHub App token
    - Applies `internal` label for org members
    - Applies `external` label for outside contributors
-   - `external` label triggers downstream workflows (e.g., `require_issue_link.yml`)
+   - `external` label triggers downstream workflows
    - Contributor tier labels determined by GitHub org role
 
 2. **File-Based Labels** (skipped on `edited`)
@@ -194,72 +231,41 @@ The workflow applies labels in this order:
    - Applies corresponding type labels (e.g., `type: feature`, `type: bug`, `type: documentation`)
    - Removes stale type labels when title changes
 
-### Label Concurrency
-
-Uses concurrency group per PR number with separate handling:
-- `opened` events use a dedicated concurrency key to prevent losing tier labels (full serialization)
-- Other events (`synchronized`, `reopened`, `edited`) allow cancellation
-
 ---
 
-## PR Requirements & Conventional Commits
+## Test Matrix
 
-### PR Title Format (Conventional Commits 1.0.0)
+### Python Versions
 
-All PRs must use the format: `<type>[optional scope]: <description>`
+The test matrix varies by package to balance coverage with CI speed:
 
-**Allowed Types:**
-- `feat` — new feature (MINOR bump)
-- `fix` — bug fix (PATCH bump)
-- `docs` — documentation only
-- `style` — formatting/linting (no code change)
-- `refactor` — code change (no feature/fix)
-- `perf` — performance improvement
-- `test` — add/fix tests
-- `build` — build system changes
-- `ci` — CI/CD configuration changes
-- `chore` — other changes
-- `revert` — revert previous commit
-- `release` — version release
-- `hotfix` — urgent fix
+- **libs/core**: Tests on Python 3.11, 3.12, 3.13, 3.14 (comprehensive coverage of core)
+- **All other packages** (including openai, perplexity, anthropic, etc.): Tests on Python 3.11, 3.14 (reduced to save CI time)
 
-**Allowed Scopes (optional but recommended):**
-Core packages: `core`, `langchain`, `langchain-classic`, `model-profiles`, `standard-tests`, `text-splitters`
-Partner packages: `anthropic`, `chroma`, `deepseek`, `exa`, `fireworks`, `groq`, `huggingface`, `mistralai`, `nomic`, `ollama`, `openai`, `openrouter`, `perplexity`, `qdrant`, `typesafe`, `xai`
-Infrastructure: `infra`, `deps`, `partners`, `docs`
+### Default Partner Libraries
 
-**Breaking Changes:**
-- Append `!` after type/scope: `feat(core)!: remove deprecated API`
-- Requires major version bump (MAJOR)
+Integration tests and scheduled runs default to testing these 9 partner packages:
 
-### PR Description Requirements
+1. `libs/partners/openai`
+2. `libs/partners/anthropic`
+3. `libs/partners/fireworks`
+4. `libs/partners/groq`
+5. `libs/partners/mistralai`
+6. `libs/partners/xai`
+7. `libs/partners/google-vertexai`
+8. `libs/partners/google-genai`
+9. `libs/partners/aws`
 
-1. **Issue linking** (required for external contributors)
-   - Start with `Fixes #<issue-number>` — auto-closes issue on merge
-   - Link to approved solution before working
+### CodSpeed Benchmarks
 
-2. **Concise description**
-   - 1-2 sentences explaining who benefits, what problem it solves
-   - Prefer user story over lengthy summary
-   - Note any breaking changes clearly
-   - Document dependencies on other PRs
+For performance-critical packages, the `build` job includes CodSpeed benchmark configurations:
 
-3. **Release notes** (required for features/breaking bugfixes)
-   - Provide user-visible change in release-note-ready language
-   - Omit for chores, refactors, test-only changes
+- **libs/core**: Tested with walltime mode (default CPU simulation too slow)
+- **libs/partners/fireworks**: Walltime mode (~328s under CPU simulation)
+- **libs/partners/openai**: Walltime mode (6 benchmarks, ~6 min under CPU simulation)
+- Other packages: CPU simulation mode
 
-### PR Validation Checklist
-
-1. **Local testing required**
-   - Run `make format`, `make lint`, `make test` before pushing
-   - PR fails CI review unless these three pass in CI
-
-2. **Scope limits**
-   - Avoid touching multiple packages unless necessary
-   - Keep PRs focused for faster review and clearer CI output
-
-3. **No dependency changes without approval**
-   - Don't update `uv.lock` files or `pyproject.toml` dependencies without explicit maintainer permission
+Each package runs benchmarks on Python 3.13 with `uv run pytest --benchmark-compare ...`.
 
 ---
 
@@ -279,29 +285,28 @@ Runs daily integration tests against partner libraries using live API credential
 - Only runs on main repo (forks can trigger manually but don't run on schedule)
 - Supports exclude lists and Python version overrides
 
+### Scheduling
+
+**Schedule:** Daily at 1:00 PM UTC (computed via `cron: "0 13 * * *"`)
+
+**Credential Management:** Integration tests only run on the main repository with access to secrets. Forks can trigger manual runs, but scheduled runs are blocked on forks to prevent credential leakage.
+
 ### Matrix Configuration
 
-Default libraries tested daily:
-- `libs/partners/openai`
-- `libs/partners/anthropic`
-- `libs/partners/fireworks`
-- `libs/partners/groq`
-- `libs/partners/mistralai`
-- `libs/partners/xai`
-- `libs/partners/google-vertexai`
-- `libs/partners/google-genai`
-- `libs/partners/aws`
+**Default Python versions:** 3.11, 3.14
 
-**Python versions (default):** 3.10, 3.14
+**Compute-Matrix Job:** 
+- Generates a matrix combining `python-version` × `working-directory`
+- Respects `python-version-override` input (e.g., manually specify `3.12` only)
+- Supports `exclude` parameter to drop specific libraries from "all" runs (e.g., `exclude: openai,anthropic`)
+- The `working-directory-override` input takes precedence over dropdown choice
 
-**Special Python version handling:**
-- **openai and perplexity packages**: Use Python 3.11 and 3.14 instead of 3.10 and 3.14 due to SDK compatibility requirements
-- Other packages: Use default 3.10 and 3.14
-
-**Manual run options:**
-- Run all libraries or select one
+**Manual Trigger Options:**
+- Run all libraries (default)
+- Select one library from dropdown
+- Override with custom path (e.g., `libs/partners/custom-partner`)
 - Exclude specific libraries from "all" runs
-- Override Python version matrix
+- Override Python version matrix (e.g., test on 3.12 only)
 
 ### Integration Test Execution
 
@@ -665,21 +670,6 @@ LangChain uses **Semantic Versioning** with **PEP 440** normalization:
 
 ---
 
-## Matrix Testing & Performance Benchmarks
-
-### CodSpeed Benchmarks
-
-For performance-critical packages, the `build` job includes CodSpeed benchmark configurations:
-
-- **libs/core**: Tested with walltime mode (default CPU simulation too slow)
-- **libs/partners/fireworks**: Walltime mode (~328s under CPU simulation)
-- **libs/partners/openai**: Walltime mode (6 benchmarks, ~6 min under CPU simulation)
-- Other packages: CPU simulation mode
-
-Each package runs benchmarks on Python 3.13 with `uv run pytest --benchmark-compare ...`.
-
----
-
 ## Documentation Automation: OpenWiki Update Workflow
 
 ### Workflow: `openwiki-update.yml`
@@ -730,6 +720,124 @@ Automatically updates repository documentation from source code using OpenWiki a
 - Preserves documentation from before failure (partial progress is valuable)
 - Next scheduled run uses updated baseline to avoid re-documenting unchanged code
 - Relies on full git history for accurate change detection
+
+---
+
+## Debugging CI Failures
+
+### Checking Workflow Logs
+
+1. **Navigate to Actions tab** on the GitHub repository
+2. **Select the failed workflow run** (check_diffs, integration_tests, etc.)
+3. **Review the job summary** — indicates which job failed
+4. **Expand the failed job** to see detailed step output
+5. **Look for error messages** or assertion failures in the logs
+
+### Re-running Failed Jobs
+
+**Option 1: Re-run single job**
+- Click "Re-run jobs" button in Actions UI
+- Select specific failed job (faster than re-running entire workflow)
+- Useful for transient network failures or flaky tests
+
+**Option 2: Re-run entire workflow**
+- Click "Re-run all jobs" in Actions UI
+- Re-runs all jobs from the start
+- Use when infrastructure changes affect multiple jobs
+
+**Option 3: Re-run from command line**
+```bash
+gh run rerun <RUN_ID>
+```
+
+### Reproduction: Running Tests Locally
+
+#### PR CI Tests (check_diffs.yml)
+
+To reproduce the tests that would run for your changed files:
+
+```bash
+# 1. Install dependencies
+uv sync --group test
+
+# 2. Run linting
+make lint
+
+# 3. Run unit tests
+make tests
+
+# 4. Run extended tests (if your package has them)
+make extended_tests
+
+# 5. Check integration tests compile (no actual execution)
+pytest -m compile tests/integration_tests
+```
+
+#### Integration Tests (integration_tests.yml)
+
+To test against live APIs locally:
+
+```bash
+# 1. Install integration test dependencies
+uv sync --group test --group test_integration
+
+# 2. Set required API keys
+export OPENAI_API_KEY="..."
+export ANTHROPIC_API_KEY="..."
+# ... other API keys as needed
+
+# 3. Run integration tests
+make integration_tests
+```
+
+#### VCR Cassette Tests
+
+For VCR-backed tests (openai), you can run in playback-only mode locally:
+
+```bash
+# Run in playback-only mode (uses cached HTTP responses)
+pytest tests/integration_tests --vcr-record=none
+
+# Or check cassettes match live API (requires API keys)
+VCR_RECORD_MODE=new_episodes pytest tests/integration_tests
+```
+
+### Common Failure Patterns
+
+| Error | Likely Cause | Fix |
+|-------|--------------|-----|
+| `ImportError: cannot import name 'X'` | Missing dependency or breaking API change | Run `uv sync` with latest lock file; check `pyproject.toml` |
+| `KeyError` in `check_diff.py` | New package directory not handled | Update `check_diff.py` to recognize new `libs/*` structure |
+| Test timeout in integration tests | Slow external API or network issue | Increase timeout; re-run; check API status page |
+| `assert version != published_version` | Version already published to PyPI | Increment version in `pyproject.toml` before releasing |
+| Prerelease dependency error | Stable release depends on alpha package | Update dependency constraints or use `--prerelease=allow` |
+
+### Debugging Strategy
+
+**For flaky tests:**
+1. Re-run the job to see if failure is consistent
+2. If intermittent, mark test with `@pytest.mark.flaky(reruns=3)` to auto-retry
+3. Check if test depends on external services (slow API, network timeout)
+
+**For infrastructure issues:**
+1. Check if multiple unrelated workflows are failing (could be GitHub Actions outage or credential issue)
+2. Verify repository secrets are valid and haven't rotated
+3. Check if `.github/workflows/` or `.github/scripts/` were recently changed
+
+**For environment-specific issues:**
+1. Check Python version mismatch (test locally with same version as CI)
+2. Verify dependency versions match by comparing `uv.lock` in repo vs local
+3. Run with verbose/debug flags: `pytest -vv`, `make lint --verbose`
+
+### Getting Help
+
+If a workflow fails and you can't determine the cause:
+
+1. **Check recent changes** — Did recent `.github/` changes affect this?
+2. **Review PR description** — Are there known test limitations?
+3. **Search closed issues** — Has this failure been resolved before?
+4. **Mention in PR** — Tag maintainers if unclear why specific tests are required
+5. **Check external services** — Is OpenAI API, PyPI, or other external service down?
 
 ---
 

@@ -3,6 +3,9 @@ type: "Developer Tools & Commands"
 title: "Development Commands and Local Setup"
 description: "Quick reference for uv, make, lint, test, and type-checking commands in the LangChain monorepo, including environment setup, pre-commit hooks, and testing workflows."
 tags: [development, build, testing, linting, typing, uv, make, pre-commit, local-setup]
+verified:
+  - by: openwiki/0.5.0
+    at: 2026-11-12T08:17:38.805Z
 sources:
   - id: openwiki-source-4d1645cb6317345817452838
     resource: repo://.pre-commit-config.yaml
@@ -10,6 +13,8 @@ sources:
     resource: repo://libs/core/Makefile
   - id: openwiki-source-3486a94e6eb23a78271a5bfb
     resource: repo://libs/core/pyproject.toml
+  - id: openwiki-source-7c96a74af67942d40559bf7d
+    resource: repo://libs/langchain_v1/Makefile
   - id: openwiki-source-f708a9db48bfcf1b154e4708
     resource: repo://libs/langchain/Makefile
   - id: openwiki-source-f4436232e0451a04247e92e5
@@ -18,10 +23,7 @@ sources:
     resource: repo://libs/Makefile
   - id: openwiki-source-a6e669bb11f217c6fbd06670
     resource: repo://libs/partners/anthropic/Makefile
-generated: { by: "openwiki/0.5.0", at: "2026-11-06T08:17:28.425Z" }
-verified:
-  - by: openwiki/0.5.0
-    at: 2026-11-06T08:17:28.425Z
+generated: { by: "openwiki/0.5.0", at: "2026-11-12T08:17:38.805Z" }
 ---
 
 ## Overview
@@ -135,7 +137,7 @@ This applies ruff formatting, linting, and mypy type checking. Hook IDs in pre-c
 - `langchain_v1`: libs/langchain_v1
 - `standard-tests`: libs/standard-tests
 - `text-splitters`: libs/text-splitters
-- Partner packages: `anthropic`, `chroma`, `exa`, `fireworks`, `groq`, `huggingface`, `mistralai`, `nomic`, `ollama`, `openai`, `qdrant`, etc.
+- Partner packages: `anthropic`, `chroma`, `deepseek`, `exa`, `fireworks`, `groq`, `huggingface`, `mistralai`, `nomic`, `ollama`, `openai`, `openrouter`, `perplexity`, `qdrant`, `typesafe`, `xai`
 
 ### Version Consistency Checks
 Each package with a version file has a hook ensuring `pyproject.toml` version matches source code:

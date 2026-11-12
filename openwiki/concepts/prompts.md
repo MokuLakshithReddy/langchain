@@ -3,9 +3,6 @@ type: "Reference"
 title: "Prompts: Templates and Formatting"
 description: "Prompt templates define parameterized message sequences and variable substitution patterns for language models. Covers template syntax, variable handling, few-shot learning, image inputs, message composition, PromptValue routing, and runnable integration."
 tags: [prompt, template, few-shot, variable-substitution, runnable, composition, chat-model, image-input, formatting]
-verified:
-  - by: openwiki/0.5.0
-    at: 2026-11-06T08:17:28.425Z
 sources:
   - id: openwiki-source-269af2bb49a21bd6c548b3f0
     resource: repo://libs/core/langchain_core/prompt_values.py
@@ -19,7 +16,10 @@ sources:
     resource: repo://libs/core/langchain_core/prompts/prompt.py
   - id: openwiki-source-cf81d0ba0a387a7cd9b5dfb8
     resource: repo://libs/core/langchain_core/prompts/string.py
-generated: { by: "openwiki/0.5.0", at: "2026-11-06T08:17:28.425Z" }
+generated: { by: "openwiki/0.5.0", at: "2026-11-12T08:17:38.805Z" }
+verified:
+  - by: openwiki/0.5.0
+    at: 2026-11-12T08:17:38.805Z
 ---
 
 # Prompts: Templates and Formatting
@@ -158,8 +158,8 @@ template = ChatPromptTemplate([
 - **`"system"`** → `SystemMessagePromptTemplate`: Priming instructions (always first).
 - **`"human"` / `"user"`** → `HumanMessagePromptTemplate`: User/human input.
 - **`"ai"` / `"assistant"`** → `AIMessagePromptTemplate`: Model output (for few-shot examples).
-- **`"tool"` / `"function"`** → `ToolMessagePromptTemplate`: Tool execution results.
-- **`MessagesPlaceholder`**: Dynamic message lists (e.g., conversation history).
+- **`"placeholder"`** → `MessagesPlaceholder`: Dynamic message lists (e.g., conversation history).
+- **Message classes** (e.g., `ToolMessagePromptTemplate`, `ChatMessagePromptTemplate`): Created via explicit class constructor, not tuple shorthand.
 
 ### Variable Inference and Auto-Wrapping
 
@@ -176,6 +176,8 @@ print(template.input_variables)  # ['input', 'role']
 # If only one input variable, invoke() auto-wraps non-dict arguments
 result = template.invoke("Hello")  # Auto-wrapped as {"input": "Hello"}
 ```
+
+The auto-wrapping occurs in `BasePromptTemplate._validate_input()`: when the input is not a dict and there is exactly one `input_variable`, the non-dict value is wrapped into a dict with that variable name as the key.
 
 ### MessagesPlaceholder for Conversation History
 

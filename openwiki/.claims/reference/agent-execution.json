@@ -1,18 +1,22 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:7fc41babbc7630a2c926e1584dd5a7d090c28b513f334b3cd57acdce0b96634d",
+  "pageVersion": "sha256:7f305e88c29e85308d47fc0d830cd1a65591983ada1caa2ec19dc5f3d687dc4e",
   "claims": [
     {
       "id": "claim_bf4a816208b849fcbec8f49d366129d2",
-      "statement": "The /openwiki/reference/agent-execution.md page serves as a redirect to the primary Agent Execution documentation, which provides comprehensive coverage of the agent's structured, state-driven loop orchestrated by a LangGraph StateGraph, including initialization, model invocation, tool dispatch, result processing, termination logic, middleware hooks, and structured output handling.",
+      "statement": "The agent execution model orchestrates a structured state-driven loop built on LangGraph StateGraph, with initialization via before_agent hooks, model invocation via the model node, tool dispatch via the tools node, middleware wrapping for both model and tool calls, conditional routing based on tool_calls and structured output, and finalization via after_agent hooks. Recursion limit is 9,999.",
       "evidence": [
         {
-          "resource": "repo://libs/langchain_v1/langchain/agents/factory.py",
-          "version": "repo-file-v1:sha256:b70e7cffd19d840505b034d036926064d1a07e834aae4a35da2e0a47e0423438"
+          "resource": "repo://libs/langchain_v1/langchain/agents/factory.py#L1239-L1247",
+          "version": "repo-lines-v1:sha256:e1e5b640f933c9eed12b1dc48675089e352d8c003b5d2e7d70c0863dc5941b70:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzhkYTFjYzZhMjhlM2U1YjY3NTFhMWIzODNhY2ZiNTRjZjk5OGNmMDU0YmRiNWNhYWZiZmM0MWU4ZWU5ZTBiOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzBjMWYxODhmMTQyZWQ3YTgyNDY4MGIyMDcxNzJjNTUxOWJjNjE0YTQ4ZmRhN2NmMTY3ZWRiOGRkZjc5OTU2YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2Y2ODMzMzdiNGMzZjU0ZWJkYWJlM2IyNjYyZTk1YzU5NDQ2YmFmODg2NjZiMjc5OTk2ODUyYzFjYTc1YTVhZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjcxZTY1ZGNiOTY1MDA2YWI1ZjliZDk5MmY5NmY1Mzc5MzUyODNkOWEzZTBmODkyMjIzZTZjZDVhZGRhNGFjNiJ9"
         },
         {
-          "resource": "repo://libs/langchain_v1/langchain/agents/middleware/types.py",
-          "version": "repo-file-v1:sha256:56688206dce0334e7ca82125d7b809c23427890c234dfd69123dad038a387f31"
+          "resource": "repo://libs/langchain_v1/langchain/agents/factory.py#L1900-L1925",
+          "version": "repo-lines-v1:sha256:7f0e3f3f511378f8c0bcbb52023635ccebf55e147a9ec4ee24158ad7e58d4826:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImViYzI2MWNjMzliZmRmZDMwODQ4OTY5YjFhN2IzYTZmYWQ5OGY5MjMyMDM2OWIwYjk5YjRhOWEzYTY4OWYyMzQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY3ODdmOWY0M2FkM2JlZGJhZWIyN2VhYjljOTAwNzg2MmFlOTNjNTEwZGM1ZTg2YTZkZDMzMWY4MDNiMzAwYzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk1MDVkZWQxZTkxMTRhNzk3YWJhZWExMTYwMTlhN2FmNmJlMDU1ZTE0YzMwODg4ODUzODEwMDI4ZWJhNzYzNGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxZjIxZWZmMTg3ZDdlZTVjODVmN2JmODJiOGViY2E1MGM5MjEzNWI1ODA3YWI1ZWNhMjljNTM4ZDliNmFiMjIifQ"
+        },
+        {
+          "resource": "repo://libs/langchain_v1/langchain/agents/middleware/types.py#L387-L431",
+          "version": "repo-lines-v1:sha256:66f510e68884d75a6c1f9fd48290cb4ab6fa97230b001482c793735d8429c362:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRhNmJiNmZkMzc3ZWYwYTBkOWYwNmRmZjI0Y2NiM2EyYjU3NjVlMDkwNjk1MTE2ZTgzMGM5MDNhN2MyZDcyYzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEwYmM3N2RhODk5ZDAzOTU0ODhmMDE4ZmNhMTNjMmY4NjVhMzNjMDkwNjViYzYyNTVjMTJjMjBkYTgyMjE1NmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY2YmFhOGFkY2RiYjQzYmIxN2I3NTVlMTgwODE0ZjkzMzY2MTJhOGQxMTAxN2YyZjUxNmUxZTJjMjM1MTFjNDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZjODlhYmQwMWYxMDM1Y2IzMmNiOWVkODdjNGUwOTQyMjBhZWVmOTYwYzYxNzZiN2NlOGI3OGM0YzMwMDJmZDgifQ"
         }
       ]
     },
@@ -189,6 +193,6 @@
   ],
   "verification": {
     "by": "openwiki/0.5.0",
-    "at": "2026-11-10T08:17:41.265Z"
+    "at": "2026-11-12T08:17:38.805Z"
   }
 }

@@ -58,18 +58,18 @@ sources:
     resource: repo://libs/partners/openai/langchain_openai/decisions/base.py
   - id: openwiki-source-bd29e79613d5f366a00068f5
     resource: repo://libs/standard-tests/langchain_tests/base.py
-generated: { by: "openwiki/0.5.0", at: "2026-11-10T08:17:41.265Z" }
+generated: { by: "openwiki/0.5.0", at: "2026-11-12T08:17:38.805Z" }
 verified:
   - by: openwiki/0.5.0
-    at: 2026-11-10T08:17:41.265Z
+    at: 2026-11-12T08:17:38.805Z
 ---
 
 ## Overview
 
 This page provides a quick reference for locating code by topic in the LangChain monorepo. The repository is organized as a multi-package workspace with a three-layer architecture:
 
-- **langchain-core** (v1.7.7): Base abstractions for messages, runnables, tools, prompts, language models, callbacks, and refusal handling
-- **langchain** (v1.4.9): Orchestration, agent factory, middleware composition, and model initialization
+- **langchain-core** (v1.8.0): Base abstractions for messages, runnables, tools, prompts, language models, callbacks, and refusal handling
+- **langchain** (v1.5.0): Orchestration, agent factory, middleware composition, and model initialization
 - **langchain-classic** (v1.0.8): Legacy chains, memory, retrieval abstractions, and backward compatibility
 - **partners** (`langchain-*` packages): Provider-specific implementations (OpenAI, Anthropic, Ollama, etc.)
 - **text-splitters** (v1.x): Text splitting and chunking utilities
@@ -129,7 +129,7 @@ Use this map to navigate directly to the code responsible for a given concept, u
 
 ```
 /libs/
-├── core/                           # langchain-core: Base abstractions (v1.7.7)
+├── core/                           # langchain-core: Base abstractions (v1.8.0)
 │   ├── langchain_core/
 │   │   ├── language_models/        # BaseChatModel and language model abstractions
 │   │   │   ├── chat_models.py      # Core chat model interface
@@ -187,7 +187,7 @@ Use this map to navigate directly to the code responsible for a given concept, u
 │   ├── Makefile
 │   └── pyproject.toml
 │
-├── langchain_v1/                   # langchain: Orchestration and agents (v1.4.9)
+├── langchain_v1/                   # langchain: Orchestration and agents (v1.5.0)
 │   ├── langchain/
 │   │   ├── agents/
 │   │   │   ├── factory.py          # Agent factory: graph construction, node orchestration
@@ -313,7 +313,7 @@ Use this map to navigate directly to the code responsible for a given concept, u
 
 ## Architecture Layers
 
-### Layer 1: langchain-core (Base Abstractions, v1.7.7)
+### Layer 1: langchain-core (Base Abstractions, v1.8.0)
 Core interfaces and implementations used by all other packages:
 - **Message protocol**: AIMessage, HumanMessage, SystemMessage, ToolMessage with rich content blocks, including standard refusal blocks
 - **Runnable protocol**: Composable units with `invoke()`, `stream()`, `batch()` and async variants
@@ -329,7 +329,7 @@ Core interfaces and implementations used by all other packages:
 ### Layer 2: langchain (Orchestration & Agents)
 High-level abstractions for agentic loops and orchestration:
 - **Agent Factory** (`factory.py`): Constructs LangGraph state machines with 7 node types (entry, loop entry, model, after-model, tools, exit) orchestrated by middleware
-- **Middleware System**: Pluggable hooks for model boundaries, tool boundaries, and lifecycle events (before_agent, before_model, after_model, after_tool, after_agent)
+- **Middleware System**: Pluggable hooks for model boundaries, tool boundaries, and lifecycle events (before_agent, before_model, after_model, after_tool_call, after_agent)
 - **Model Initialization**: `init_chat_model()` factory for provider:model discovery and dynamic loading
 - **Structured Output**: Schema marshaling for typed agent responses (Pydantic, dataclass, TypedDict, JSON schema)
 - **MCP Integration**: Model Context Protocol adapter for tool discovery
@@ -402,208 +402,45 @@ Provider-specific implementations as independent packages:
 3. Implement hook methods: `before_agent()`, `before_model()`, `after_model()`, `after_tool_call()`, `after_agent()`
 4. Register in middleware composition chain via `factory.py` builder
 
-## Build and Development Commands
+## Finding Things: Common Searches
 
-All package directories (`libs/core/`, `libs/langchain_v1/`, `libs/partners/<provider>/`, etc.) include a local `Makefile` with standard targets:
+**Where is BaseChatModel?**
+- Implementation: `repo://libs/core/langchain_core/language_models/chat_models.py`
+- Defines the protocol for all chat model implementations with `invoke()`, `stream()`, `batch()` methods
+- Subclassed by each provider (ChatOpenAI, ChatAnthropic, etc.)
 
-```bash
-# Format code (ruff)
-make -C <package> format
+**How do I add a tool?**
+- Tool abstraction: `repo://libs/core/langchain_core/tools/base.py` (BaseTool)
+- Conversion utilities: `repo://libs/core/langchain_core/tools/convert.py` (from functions/Pydantic)
+- Tool rendering: `repo://libs/core/langchain_core/tools/render.py` (format for models)
 
-# Lint code (ruff)
-make -C libs/core lint
+**Where is middleware execution?**
+- Middleware types: `repo://libs/langchain_v1/langchain/agents/middleware/types.py` (AgentMiddleware, hooks)
+- Factory orchestration: `repo://libs/langchain_v1/langchain/agents/factory.py` (composes middleware into graph)
+- Example middleware: `repo://libs/langchain_v1/langchain/agents/middleware/model_retry.py` (retry logic)
 
-# Type check (mypy)
-make -C libs/core type
+**How do I handle model refusals?**
+- Core refusal type: `repo://libs/core/langchain_core/messages/content.py#L495-L520` (RefusalContentBlock)
+- Error class: `repo://libs/core/langchain_core/exceptions.py` (ModelRefusalError)
+- Parser support: `repo://libs/core/langchain_core/output_parsers/_refusal.py` (raise_if_refused)
+- Optional middleware: `repo://libs/langchain_v1/langchain/agents/middleware/model_refusal.py` (ModelRefusalMiddleware for opt-in error raising)
 
-# Run all tests
-make -C libs/langchain_v1 test
+**Where are message types defined?**
+- Base types: `repo://libs/core/langchain_core/messages/base.py` (BaseMessage)
+- Specific types: `repo://libs/core/langchain_core/messages/` (AIMessage, HumanMessage, SystemMessage, ToolMessage)
+- Content blocks: `repo://libs/core/langchain_core/messages/content.py` (TextContentBlock, ImageContentBlock, RefusalContentBlock, etc.)
 
-# Run specific test file
-make -C libs/core TEST_FILE=tests/unit_tests/test_runnables.py test
+**How do I compose runnables?**
+- Core protocol: `repo://libs/core/langchain_core/runnables/base.py` (Runnable[Input, Output])
+- Composition operators: `repo://libs/core/langchain_core/runnables/` (piping, branching, fallback, retry)
+- Configuration: `repo://libs/core/langchain_core/runnables/config.py` (RunnableConfig for context)
 
-# Lock dependencies
-make -C libs/core lock
+**Where is init_chat_model()?**
+- Implementation: `repo://libs/langchain_v1/langchain/chat_models/base.py`
+- Provides dynamic model discovery by provider:model identifier
+- Integrates with provider registry
 
-# Check lockfile consistency
-make -C libs/core check-lock
-
-# Extended tests (marked with @pytest.mark.extended)
-make -C libs/core extended_tests
-```
-
-The root `repo://libs/Makefile` coordinates multi-package operations:
-
-```bash
-# Lock all packages at once
-make -C libs lock
-
-# Check all lockfiles
-make -C libs check-lock
-```
-
-## Key Implementation Details
-
-### Agent Factory & Middleware Orchestration
-The agent construction pipeline in `repo://libs/langchain_v1/langchain/agents/factory.py` builds a LangGraph state machine with these node types:
-- **Entry**: Runs `before_agent` middleware once at start
-- **Loop Entry**: Begins each model iteration, runs `before_model` hooks
-- **Model**: Invokes language model with accumulated message history and tool bindings
-- **After Model**: Runs `after_model` hooks for response processing, tool call extraction
-- **Tools**: Executes tool calls in parallel when present
-- **Exit**: Runs `after_agent` hooks once at completion
-
-Middleware hooks are composable and execute in order:
-- `before_agent(state, config)` → single entry point
-- `before_model(state, config)` → per-iteration, before model call
-- `after_model(response, state, config)` → after model call, can transform response
-- `after_tool_call(tool_call, tool_result, state, config)` → per tool execution
-- `after_agent(state, config)` → single exit point
-
-Each middleware can inject commands to jump to different nodes, modify state, or abort execution.
-
-### Middleware Implementations (20+ in `/agents/middleware/`)
-- **Model-level**: `ModelRetryMiddleware`, `ModelCallLimitMiddleware`, `ModelFallbackMiddleware`
-- **Tool-level**: `ToolRetryMiddleware`, `ToolCallLimitMiddleware`, `ToolErrorMiddleware`, `ToolEmulator`
-- **Context**: `HumanInTheLoopMiddleware`, `ContextEditingMiddleware`, `FilesystemFileSearchMiddleware`
-- **Safety/Redaction**: `PIIMiddleware`, `RedactionMiddleware`, `ShellToolMiddleware`
-- **Execution Control**: `ProviderToolSearchMiddleware`
-- **Optimization**: `SummarizationMiddleware`, `TodoListMiddleware`
-- **Selection**: `LLMToolSelectorMiddleware`
-- **Lifecycle**: `TracePolicy` configuration and execution tracing
-
-Each middleware is independently configurable and composable into agent construction chains.
-
-### Runnable Composition Protocol
-The Runnable protocol in `repo://libs/core/langchain_core/runnables/base.py` enables declarative chaining via operators:
-- **Piping** (`|`): Sequential composition, threads output to next input
-- **Parallel** (`+`): Parallel execution of branches, collects results
-- **Branching** (`.pipe()` with routing): Conditional execution paths based on state
-- **Fallback** (`.with_fallback()`): Error recovery with alternative runnables
-- **Retry** (`.with_retry()`): Automatic retry with exponential backoff
-
-All compositions automatically support:
-- `invoke(input, config=None)` → sync execution
-- `ainvoke(input, config=None)` → async execution
-- `batch(inputs, config=None, ...)` → parallel batch processing
-- `stream(input, config=None)` → streaming output chunks
-- `astream()`, `batch_as_completed()`, and other variants
-
-### Message Protocol & Content Blocks
-The message abstraction in `repo://libs/core/langchain_core/messages/` defines:
-- **Message types**: `AIMessage`, `HumanMessage`, `SystemMessage`, `ToolMessage`, `FunctionMessage`
-- **Content representation**: Messages store `content` as either:
-  - `str` for simple text
-  - `list[ContentBlock]` for mixed content (text, images, tool use, etc.)
-- **Content blocks**: `TextBlock`, `ImageBlock`, `ToolUseBlock`, `ToolResultBlock`, custom blocks
-- **Message utilities**: 
-  - Serialization/deserialization via `dumps()`, `loads()`
-  - Message merging and deduplication
-  - Role mapping for different model APIs
-  - Model-specific translation (e.g., OpenAI format conversion)
-
-### Tool Abstraction & Binding
-The `BaseTool` in `repo://libs/core/langchain_core/tools/base.py` provides:
-- **Tool protocol**: 
-  - Sync/async invoke methods
-  - Schema generation from docstrings and Pydantic models
-  - Argument validation and type coercion
-- **Tool conversion** (via `convert.py`):
-  - `tool()` decorator for functions → StructuredTool
-  - Pydantic model → Tool with JSON schema
-  - Custom tool builders
-- **Tool rendering** (via `render.py`):
-  - Format tools for model context
-  - Description-only for prompt inclusion
-  - Structured schemas for function calling
-
-Tool binding in chat models:
-```python
-model.bind_tools([tool1, tool2])  # Binds tools via provider API
-```
-
-### Output Parser Hierarchy
-- **BaseOutputParser**: Abstract base for all parsers
-- **PydanticOutputParser**: Validates against Pydantic model
-- **JsonOutputParser**: Parses JSON text into dict
-- **XmlOutputParser**: Parses XML structured output
-- **OpenAI tool/function parsers**: Handle tool call and function call formats
-- **Custom parsers**: User-defined parsing logic
-
-### Refusal Handling
-Refusals are now handled uniformly across providers using standard content blocks and exceptions:
-
-**Standard Refusal Block** (`RefusalContentBlock`):
-- Defined in `langchain_core/messages/content.py`
-- Exported from `langchain_core/messages/__init__.py`
-- Fields: `type: "refusal"`, `refusal: str` (text), `extras: dict` (provider-specific metadata)
-- Unified representation across OpenAI, Anthropic, Google, and other providers
-
-**Refusal Detection & Error Raising**:
-- `raise_if_refused()` in `langchain_core/output_parsers/_refusal.py` checks for refusal blocks
-- Raises `ModelRefusalError` with context about the refusal
-- Used automatically by structured output parsers (JSON, Pydantic, etc.)
-
-**Opt-In Error Handling via Middleware**:
-- `ModelRefusalMiddleware` in `langchain_v1/langchain/agents/middleware/model_refusal.py`
-- By default, refusals pass through as message content (no error raised in invoke)
-- Add middleware to `create_agent()` to treat refusals as errors
-- Streaming may emit content before refusal is known
-
-**Provider Refusal Mapping**:
-- OpenAI: `refusal` field + `content: []` → RefusalContentBlock
-- Anthropic: `stop_reason: "refusal"` + `stop_details` → RefusalContentBlock
-- Google: `finish_reason: "STOP"` + `finish_message` → RefusalContentBlock
-
-## Dependency Flow
-
-```
-User Applications
-  ├─→ langchain (v1.4.9)
-  │    ├─→ langchain-core (v1.7.7)
-  │    └─→ LangGraph (state machines, runtime)
-  │
-  ├─→ langchain-core (direct use)
-  │    └─→ LangSmith (tracing), httpx (HTTP), tenacity (retry), pydantic
-  │
-  ├─→ langchain-classic (v1.0.8) [backward compat]
-  │    └─→ langchain-core, SQLAlchemy, LangSmith
-  │
-  └─→ Partner Packages (langchain-openai, langchain-anthropic, etc.)
-       ├─→ langchain-core (pinned versions ≥1.7.5)
-       └─→ Provider SDKs (openai, anthropic, etc.)
-```
-
-**Versioning Model**:
-- Core is released independently with strict semantic versioning
-- LangChain and partners pin core versions with lower bounds
-- Partner packages are released independently per provider
-- Standard-tests library contains shared conformance contracts
-
-## Extension Points
-
-### Adding Custom Chat Model
-1. Extend `BaseChatModel` from `langchain_core.language_models.chat_models`
-2. Implement: `_generate()`, `_stream()`, `_invoke()` methods
-3. Register in `init_chat_model()` via `_BUILTIN_PROVIDERS` dict
-4. Inherit callback support, streaming, token counting, structured output from base
-
-### Adding Custom Retriever
-1. Extend `BaseRetriever` from `langchain_core.retrievers`
-2. Implement: `_get_relevant_documents()`, `_aget_relevant_documents()`
-3. Automatic integration with callback system and streaming
-
-### Adding Custom Output Parser
-1. Extend `BaseOutputParser` from `langchain_core.output_parsers`
-2. Implement: `parse()` method (and `aparse()` for async)
-3. Optionally implement `get_format_instructions()` for prompt injection
-
-### Adding Custom Tool
-1. Extend `BaseTool` or use `@tool` decorator
-2. Implement `_run()` (and `_arun()` for async)
-3. Schema automatically generated from docstrings and Pydantic annotations
-
-### Adding Custom Runnable
-1. Extend `Runnable[Input, Output]` or `RunnableSerializable`
-2. Implement: `invoke()`, `stream()`, `batch()` (async variants optional)
-3. Automatically compose with operators: `|`, `+`, `.with_fallback()`, etc.
+**Where are callbacks handled?**
+- Manager: `repo://libs/core/langchain_core/callbacks/manager.py` (CallbackManager, async variants)
+- Handlers: `repo://libs/core/langchain_core/callbacks/base.py` (BaseCallbackHandler)
+- LangSmith integration: `repo://libs/core/langchain_core/callbacks/` (automatic tracing)

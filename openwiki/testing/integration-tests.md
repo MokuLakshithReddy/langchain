@@ -32,10 +32,10 @@ sources:
     resource: repo://libs/standard-tests/langchain_tests/conftest.py
   - id: openwiki-source-025cad4ae99967890152b7e0
     resource: repo://libs/standard-tests/README.md
-generated: { by: "openwiki/0.5.0", at: "2026-11-06T08:17:28.425Z" }
+generated: { by: "openwiki/0.5.0", at: "2026-11-12T08:17:38.805Z" }
 verified:
   - by: openwiki/0.5.0
-    at: 2026-11-06T08:17:28.425Z
+    at: 2026-11-12T08:17:38.805Z
 ---
 
 ## Overview
@@ -146,36 +146,33 @@ Daily (1 PM UTC) and on-demand integration tests run against **live partner APIs
 
 **Key characteristics:**
 - **Scope**: Partner packages (`libs/partners/openai`, `libs/partners/anthropic`, etc.) and external dependents
-- **Frequency**: Scheduled daily; manually triggerable per package or subset
+- **Frequency**: Scheduled daily at 1 PM UTC; manually triggerable per package or subset
 - **Credentials**: GitHub organization secrets (scoped to "Scheduled testing" environment)
 - **Tracing**: Routes traces to LangSmith project with GitHub run metadata for debugging
-- **Concurrency**: Serialized per package to avoid racing credential usage
-- **Python versions**: 3.10, 3.14 (OpenAI and Perplexity packages require 3.11, 3.14)
+- **Concurrency**: Serialized per package per Python version to avoid racing credential usage
+- **Python versions**: 3.11, 3.14 (overridable via `python-version-override` input)
 
-### Python Version Matrix: Special Handling for OpenAI and Perplexity
+### Python Version Matrix
 
-The integration test matrix generation applies different Python version sets based on package type:
+The integration test matrix generation applies a consistent Python version set across all packages:
 
-- **Default packages** (Anthropic, Groq, Google, etc.): Python 3.10, 3.14
-- **OpenAI and Perplexity packages**: Python 3.11, 3.14 (due to SDK compatibility constraints)
+- **All packages**: Python 3.11, 3.14 (configurable via `python-version-override` input)
 
-This distinction is implemented in the `compute-matrix` job's matrix generation logic:
+This uniform version set is implemented in the `compute-matrix` job's matrix generation logic:
 
 ```bash
-# Default versions for most packages
-python_version='["3.10", "3.14"]'
-# Minimum 3.11 versions for packages with SDK constraints
-python_version_min_3_11='["3.11", "3.14"]'
+# Default versions for all packages
+python_version='["3.11", "3.14"]'
 
-# Apply version set based on package directory
-matrix="$(jq -nc ... \
-  '{include: [$directories[] as $dir |
-    (if ($dir == "libs/partners/openai" or $dir == "libs/partners/perplexity")
-     then $integration_versions else $versions end)[] |
+# Apply version set to all directories
+matrix="$(jq -nc \
+  --argjson versions "$python_version" \
+  --argjson directories "$working_directory" \
+  '{include: [$directories[] as $dir | $versions[] |
     {"working-directory": $dir, "python-version": .}]}')"
 ```
 
-This ensures OpenAI and Perplexity SDKs are tested only against Python versions they officially support, while other packages test a broader version range.
+Python version can be overridden per run via the `python-version-override` input (e.g., manually trigger with Python 3.12 only). This ensures consistent SDK compatibility testing across all partners.
 
 ### Test Dependency Groups: `test_integration`
 
